@@ -91,7 +91,7 @@ pub struct Student {
     /// The month and day the student is born, in MMDD format
     /// (e.g. 0420 for April 20). Stored as [`u16`]. **This is a temporary solution
     /// and will be replaced by a more robust way to store dates.**
-    pub month_and_day_of_birth: u16, // MMDD format
+    pub month_and_date_of_birth: u16, // MMDD format
     /// The gender of the student. See [`Gender`] for more details.
     pub gender: Gender,
     /// The Learner's Reference Number (LRN) of the student. See DepEd rules for
@@ -110,4 +110,34 @@ pub struct Student {
     /// for students without a previous grade average
     /// (e.g. Nursery or Kindergarten students).
     pub last_grade_average: u8, // from 0 to 100, most likely to be in 70-97 range
+}
+
+impl Student {
+    const INVALID_YEAR:&'static str = "Invalid year of birth.";
+    const INVALID_MONTH_DATE: &'static str = "Invalid month and/or date of birth.";
+    const INVALID_LRN: &'static str = "Invalid LRN.";
+    const INVALID_SCHOOL_ID: &'static str = "Invalid LRN.";
+    const INVALID_LAST_GRADE_AVERAGE: &'static str = "Invalid last grade average.";
+    pub fn new(first_name: String, last_name: String, year_of_birth: u16,
+        month_and_date_of_birth: u16, gender: Gender, lrn: u64, school_id: u32,
+        grade_level: GradeLevel, last_grade_average: u8,
+    ) -> Self {
+        if year_of_birth > 9999 {
+            panic!("{}", Self::INVALID_YEAR);
+        } else if month_and_date_of_birth > 1231 {
+            panic!("{} Date exceeds December 31 (`1231`).", Self::INVALID_MONTH_DATE);
+        } else if month_and_date_of_birth < 0101 {
+            panic!("{} Date is earlier than January 1 (`0101`).", Self::INVALID_MONTH_DATE);
+        } else if lrn > 999999999999 {
+            panic!("{} Exceeds 12 digits.", Self::INVALID_LRN);
+        } else if school_id > 999999 {
+            panic!("{} Exceeds 6 digits.", Self::INVALID_SCHOOL_ID);
+        } else if last_grade_average > 100 {
+            panic!("{} Exceeds 100.", Self::INVALID_LAST_GRADE_AVERAGE);
+        }
+        Self {
+            first_name, last_name, year_of_birth, month_and_date_of_birth, gender, lrn,
+            school_id, grade_level, last_grade_average,
+        }
+    }
 }
